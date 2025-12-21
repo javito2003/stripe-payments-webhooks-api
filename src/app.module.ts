@@ -6,10 +6,12 @@ import { AuthModule } from './modules/auth/auth.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { UsersModule } from './modules/users/users.module';
 import { MongoModule } from './shared/database/mongo';
+import { SharedModule } from './shared/shared.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    SharedModule,
     MongoModule,
     UsersModule,
     AuthModule,
