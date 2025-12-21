@@ -1,5 +1,5 @@
 import { Global, Module } from '@nestjs/common';
-import { HashProvider } from './infrastructure/hash.provider';
+import { HashProvider } from './providers/hash.provider';
 
 @Global()
 @Module({

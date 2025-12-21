@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { HashProvider } from '../../../shared/infrastructure/hash.provider';
+import { HashProvider } from '../../../shared/providers/hash.provider';
 import { UserRepository } from '../../users/repository/users.repository';
 import { InvalidCredentials } from '../auth.errors';
-import { TokenProvider } from '../infrastructure/token.provider';
+import { TokenProvider } from '../providers/token.provider';
 
 export interface LoginUseCaseParams {
   email: string;

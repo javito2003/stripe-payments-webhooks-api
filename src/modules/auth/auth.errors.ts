@@ -1,5 +1,7 @@
 import { ConflictException, UnauthorizedException } from '@nestjs/common';
 
+export const INVALID_REFRESH_TOKEN_MESSAGE = 'Invalid refresh token';
+
 export class EmailAlreadyInUse extends ConflictException {
   constructor(email: string) {
     super(`The email address ${email} is already in use.`);
@@ -9,5 +11,11 @@ export class EmailAlreadyInUse extends ConflictException {
 export class InvalidCredentials extends UnauthorizedException {
   constructor() {
     super('Invalid credentials');
+  }
+}
+
+export class InvalidRefreshToken extends UnauthorizedException {
+  constructor() {
+    super(INVALID_REFRESH_TOKEN_MESSAGE);
   }
 }

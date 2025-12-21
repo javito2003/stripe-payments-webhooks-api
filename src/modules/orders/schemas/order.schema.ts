@@ -1,13 +1,27 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
+import { OrderStatus } from '../domain/order.entity';
 
-export type OrderDocument = HydratedDocument<Order>;
+export type OrderDocument = HydratedDocument<
+  Order & {
+    createdAt: Date;
+    updatedAt: Date;
+  }
+>;
 
-export enum OrderStatus {
-  PENDING = 'PENDING',
-  PAID = 'PAID',
-  FAILED = 'FAILED',
-  CANCELLED = 'CANCELLED',
+@Schema({ _id: false })
+export class OrderItemSchema {
+  @Prop({ type: Types.ObjectId, ref: 'Product', required: true })
+  productId: Types.ObjectId;
+
+  @Prop({ required: true })
+  productName: string;
+
+  @Prop({ required: true, min: 1 })
+  quantity: number;
+
+  @Prop({ required: true })
+  unitPrice: number;
 }
 
 @Schema({ timestamps: true })
@@ -15,8 +29,11 @@ export class Order {
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   userId: Types.ObjectId;
 
+  @Prop({ type: [OrderItemSchema], required: true })
+  items: OrderItemSchema[];
+
   @Prop({ required: true })
-  amount: number;
+  totalAmount: number;
 
   @Prop({ required: true, default: 'usd' })
   currency: string;
@@ -25,10 +42,10 @@ export class Order {
   status: OrderStatus;
 
   @Prop()
-  paidAt: Date;
+  stripePaymentIntentId: string;
 
   @Prop()
-  stripePaymentIntentId: string;
+  paidAt: Date;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);

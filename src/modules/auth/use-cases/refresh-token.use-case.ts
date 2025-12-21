@@ -1,6 +1,7 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { UserRepository } from '../../users/repository/users.repository';
-import { TokenPair, TokenProvider } from '../infrastructure/token.provider';
+import { TokenPair, TokenProvider } from '../providers/token.provider';
+import { InvalidRefreshToken } from '../auth.errors';
 
 export interface RefreshTokenUseCaseParams {
   refreshToken: string;
@@ -15,11 +16,13 @@ export class RefreshTokenUseCase {
 
   async execute(params: RefreshTokenUseCaseParams): Promise<TokenPair> {
     try {
-      const payload = this.tokenProvider.verifyRefreshToken(params.refreshToken);
+      const payload = this.tokenProvider.verifyRefreshToken(
+        params.refreshToken,
+      );
 
       const user = await this.userRepository.findById(payload.sub);
       if (!user) {
-        throw new UnauthorizedException('Invalid refresh token');
+        throw new InvalidRefreshToken();
       }
 
       return this.tokenProvider.generateTokens({
@@ -27,7 +30,7 @@ export class RefreshTokenUseCase {
         email: user.email,
       });
     } catch {
-      throw new UnauthorizedException('Invalid refresh token');
+      throw new InvalidRefreshToken();
     }
   }
 }

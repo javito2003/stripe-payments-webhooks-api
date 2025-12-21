@@ -13,6 +13,7 @@ import { AuthResponseDto, TokenResponseDto } from './dto/auth-response.dto';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { RegisterDto } from './dto/register.dto';
+import { INVALID_REFRESH_TOKEN_MESSAGE } from '../auth.errors';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -54,7 +55,7 @@ export class AuthController {
     description: 'Tokens refreshed successfully',
     type: TokenResponseDto,
   })
-  @ApiUnauthorizedResponse({ description: 'Invalid refresh token' })
+  @ApiUnauthorizedResponse({ description: INVALID_REFRESH_TOKEN_MESSAGE })
   refresh(@Body() refreshTokenDto: RefreshTokenDto) {
     return this.refreshTokenUseCase.execute(refreshTokenDto);
   }

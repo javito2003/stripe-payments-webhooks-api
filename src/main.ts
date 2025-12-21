@@ -21,6 +21,7 @@ async function bootstrap() {
     .setVersion('1.0')
     .addBearerAuth()
     .addTag('auth', 'User authentication endpoints')
+    .addTag('products', 'Product catalog endpoints')
     .addTag('orders', 'Order management endpoints')
     .addTag('webhooks', 'Stripe webhook endpoints')
     .build();
