@@ -16,7 +16,7 @@ import { CreateOrderUseCase } from './use-cases/create-order.use-case';
 import { GetOrderUseCase } from './use-cases/get-order.use-case';
 import { GetOrdersUseCase } from './use-cases/get-orders.use-case';
 import { HandleStripeWebhookUseCase } from './use-cases/integrations/handle-stripe-webhook.use-case';
-import { SuccessPaymentHandler } from './use-cases/integrations/handlers/sucess.handler';
+import { SuccessPaymentHandler } from './use-cases/integrations/handlers/success.handler';
 import { FailedPaymentHandler } from './use-cases/integrations/handlers/failed.handler';
 import { CancelledPaymentHandler } from './use-cases/integrations/handlers/cancelled.handler';
 

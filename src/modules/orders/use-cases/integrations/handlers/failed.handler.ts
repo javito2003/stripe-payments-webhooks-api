@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import Stripe from 'stripe';
 import { OrderStatus } from '../../../domain/order.entity';
 import { OrderRepository } from '../../../repository/orders.repository';
-import { WebhookEventHandler } from './webhook-event.handler';
+import { WebhookEventHandler } from './handler.interface';
 
 @Injectable()
 export class FailedPaymentHandler implements WebhookEventHandler {

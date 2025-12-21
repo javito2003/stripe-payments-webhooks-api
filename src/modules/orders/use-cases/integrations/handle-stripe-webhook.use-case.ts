@@ -5,10 +5,10 @@ import {
   WEBHOOK_EVENTS,
 } from '../../providers/stripe.provider';
 import { WebhookEventsRepository } from '../../repository/webhook-events.repository';
-import { WebhookEventHandler } from './handlers/webhook-event.handler';
-import { SuccessPaymentHandler } from './handlers/success-payment.handler';
-import { FailedPaymentHandler } from './handlers/failed-payment.handler';
-import { CancelledPaymentHandler } from './handlers/cancelled-payment.handler';
+import { WebhookEventHandler } from './handlers/handler.interface';
+import { SuccessPaymentHandler } from './handlers/success.handler';
+import { FailedPaymentHandler } from './handlers/failed.handler';
+import { CancelledPaymentHandler } from './handlers/cancelled.handler';
 
 export interface HandleStripeWebhookUseCaseParams {
   payload: Buffer;
@@ -27,7 +27,7 @@ export class HandleStripeWebhookUseCase {
     private readonly failedHandler: FailedPaymentHandler,
     private readonly cancelledHandler: CancelledPaymentHandler,
   ) {
-    this.handlers = new Map([
+    this.handlers = new Map<string, WebhookEventHandler>([
       [WEBHOOK_EVENTS.PAYMENT_INTENT_SUCCEEDED, this.successHandler],
       [WEBHOOK_EVENTS.PAYMENT_INTENT_FAILED, this.failedHandler],
       [WEBHOOK_EVENTS.PAYMENT_INTENT_CANCELED, this.cancelledHandler],
