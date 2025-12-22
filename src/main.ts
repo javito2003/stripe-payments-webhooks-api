@@ -1,4 +1,5 @@
 import { ValidationPipe } from '@nestjs/common';
+import cookieParser from 'cookie-parser';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
@@ -7,6 +8,12 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     rawBody: true,
   });
+
+  app.enableCors({
+    origin: true,
+    credentials: true,
+  });
+  app.use(cookieParser());
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -17,7 +24,9 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('Stripe Payments API')
-    .setDescription('API for user authentication and Stripe payment processing with webhooks')
+    .setDescription(
+      'API for user authentication and Stripe payment processing with webhooks',
+    )
     .setVersion('1.0')
     .addBearerAuth()
     .addTag('auth', 'User authentication endpoints')

@@ -1,11 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-
-export interface TokenPayload {
-  sub: string;
-  email: string;
-}
+import type { JwtPayload } from '../interfaces/jwt-payload.interface';
 
 export interface TokenPair {
   accessToken: string;
@@ -31,7 +27,7 @@ export class TokenProvider {
     );
   }
 
-  generateTokens(payload: TokenPayload): TokenPair {
+  generateTokens(payload: Omit<JwtPayload, 'iat' | 'exp'>): TokenPair {
     const accessToken = this.jwtService.sign({ ...payload });
 
     const refreshToken = this.jwtService.sign(
@@ -45,8 +41,8 @@ export class TokenProvider {
     return { accessToken, refreshToken };
   }
 
-  verifyRefreshToken(token: string): TokenPayload {
-    return this.jwtService.verify<TokenPayload>(token, {
+  verifyRefreshToken(token: string): JwtPayload {
+    return this.jwtService.verify<JwtPayload>(token, {
       secret: this.refreshTokenSecret,
     });
   }

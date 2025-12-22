@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-  Request,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -17,6 +9,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { CancelOrderUseCase } from '../use-cases/cancel-order.use-case';
 import { CreateOrderUseCase } from '../use-cases/create-order.use-case';
 import { GetOrderUseCase } from '../use-cases/get-order.use-case';
@@ -48,15 +41,20 @@ export class OrdersController {
   })
   @ApiBadRequestResponse({ description: 'Invalid items or product not found' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
-  create(
-    @Request() req: { user: { userId: string } },
+  async create(
+    @CurrentUser('userId') userId: string,
     @Body() createOrderDto: CreateOrderDto,
   ) {
-    return this.createOrderUseCase.execute({
-      userId: req.user.userId,
+    const data = await this.createOrderUseCase.execute({
+      userId,
       items: createOrderDto.items,
       currency: createOrderDto.currency,
     });
+
+    return {
+      clientSecret: data.clientSecret,
+      orderId: data.order.id,
+    };
   }
 
   @Get()
@@ -67,8 +65,8 @@ export class OrdersController {
     type: [OrderResponseDto],
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
-  findAll(@Request() req: { user: { userId: string } }) {
-    return this.getOrdersUseCase.execute({ userId: req.user.userId });
+  findAll(@CurrentUser('userId') userId: string) {
+    return this.getOrdersUseCase.execute({ userId });
   }
 
   @Get(':id')
@@ -80,13 +78,10 @@ export class OrdersController {
   })
   @ApiNotFoundResponse({ description: 'Order not found' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
-  findOne(
-    @Param('id') id: string,
-    @Request() req: { user: { userId: string } },
-  ) {
+  findOne(@Param('id') id: string, @CurrentUser('userId') userId: string) {
     return this.getOrderUseCase.execute({
       orderId: id,
-      userId: req.user.userId,
+      userId,
     });
   }
 
@@ -99,13 +94,10 @@ export class OrdersController {
   })
   @ApiBadRequestResponse({ description: 'Order cannot be cancelled' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
-  cancel(
-    @Param('id') id: string,
-    @Request() req: { user: { userId: string } },
-  ) {
+  cancel(@Param('id') id: string, @CurrentUser('userId') userId: string) {
     return this.cancelOrderUseCase.execute({
       orderId: id,
-      userId: req.user.userId,
+      userId,
     });
   }
 }
