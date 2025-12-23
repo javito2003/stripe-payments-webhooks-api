@@ -9,8 +9,8 @@ WORKDIR /app
 # Install native build dependencies for bcrypt
 RUN apk add --no-cache libc6-compat openssl python3 make g++
 
-# pnpm via corepack with pinned version
-RUN /usr/local/bin/corepack enable && /usr/local/bin/corepack prepare pnpm@10.24.0 --activate
+# Install pnpm directly
+RUN npm install -g pnpm@10.24.0
 
 # Copy only manifests to maximize cache
 COPY package.json pnpm-lock.yaml ./
@@ -29,8 +29,8 @@ WORKDIR /app
 # Install native build dependencies
 RUN apk add --no-cache libc6-compat openssl python3 make g++
 
-# pnpm via corepack
-RUN /usr/local/bin/corepack enable && /usr/local/bin/corepack prepare pnpm@10.24.0 --activate
+# Install pnpm directly
+RUN npm install -g pnpm@10.24.0
 
 # Bring installed node_modules
 COPY --from=deps /app/node_modules ./node_modules
