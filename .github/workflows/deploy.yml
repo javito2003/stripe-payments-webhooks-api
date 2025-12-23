@@ -1,0 +1,45 @@
+name: Deploy to Production and Development
+
+on:
+  push:
+    branches:
+      - main
+      - development
+
+jobs:
+  deploy:
+    name: Deploy Application
+    runs-on: ubuntu-latest
+    if: github.ref_name == 'main' || github.ref_name == 'development'
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Extract branch name
+        shell: bash
+        run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+        id: extract_branch
+
+      - name: Set enviroment name
+        run: |
+          if [[ "${{ env.BRANCH_NAME }}" == "development" ]]; then
+            echo "ENV_NAME=dev" >> $GITHUB_ENV
+          elif [[ "${{ env.BRANCH_NAME }}" == "main" ]]; then
+            echo "ENV_NAME=prod" >> $GITHUB_ENV
+          fi
+          
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITAL_OCEAN_ACCESS_TOKEN }}
+    
+      - name: Log in to DigitalOcean Container Registry with short-lived credentials
+        run: doctl registry login --access-token ${{ secrets.DIGITAL_OCEAN_ACCESS_TOKEN }}
+      
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: registry.digitalocean.com/stripe_payments/stripe_payments:${{ env.ENV_NAME }}
