@@ -38,7 +38,12 @@ export class Order {
   @Prop({ required: true, default: 'usd' })
   currency: string;
 
-  @Prop({ required: true, enum: OrderStatus, default: OrderStatus.PENDING })
+  @Prop({
+    required: true,
+    type: String,
+    enum: OrderStatus,
+    default: OrderStatus.PENDING,
+  })
   status: OrderStatus;
 
   @Prop()

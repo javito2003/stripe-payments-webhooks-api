@@ -8,8 +8,8 @@ import {
 } from '../orders.errors';
 import { StripeProvider } from '../providers/stripe.provider';
 import { OrderRepository } from '../repository/orders.repository';
-import { ProductEntity } from 'src/modules/products/domain/product.entity';
-import arrayUtils from 'src/shared/utils/array';
+import { ProductEntity } from '../../products/domain/product.entity';
+import arrayUtils from '../../../shared/utils/array';
 
 export interface CreateOrderItemParams {
   productId: string;
