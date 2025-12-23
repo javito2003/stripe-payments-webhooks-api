@@ -10,7 +10,7 @@ WORKDIR /app
 RUN apk add --no-cache libc6-compat openssl python3 make g++
 
 # pnpm via corepack with pinned version
-RUN corepack enable && corepack prepare pnpm@10.24.0 --activate
+RUN /usr/local/bin/corepack enable && /usr/local/bin/corepack prepare pnpm@10.24.0 --activate
 
 # Copy only manifests to maximize cache
 COPY package.json pnpm-lock.yaml ./
@@ -30,7 +30,7 @@ WORKDIR /app
 RUN apk add --no-cache libc6-compat openssl python3 make g++
 
 # pnpm via corepack
-RUN corepack enable && corepack prepare pnpm@10.24.0 --activate
+RUN /usr/local/bin/corepack enable && /usr/local/bin/corepack prepare pnpm@10.24.0 --activate
 
 # Bring installed node_modules
 COPY --from=deps /app/node_modules ./node_modules
